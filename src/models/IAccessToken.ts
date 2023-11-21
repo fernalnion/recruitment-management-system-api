@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User } from 'src/entities/user.entity';
+import { UserEntity } from 'src/entities/user.entity';
 
 export interface IAccessTokenPayload {
   username: string;
@@ -21,5 +21,5 @@ export interface ILogin {
 }
 
 export interface LoginRequest extends Request {
-  user: User;
+  user: UserEntity;
 }

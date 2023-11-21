@@ -8,10 +8,6 @@ import configuration from './configuration';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { User } from './entities/user.entity';
-import { Role } from './entities/role.entity';
-import { Job } from './entities/job.entity';
-import { Applicant } from './entities/applicant.entity';
 
 @Module({
   imports: [
@@ -30,7 +26,13 @@ import { Applicant } from './entities/applicant.entity';
           username: configService.get('MYSQL_USER'),
           password: configService.get('MYSQL_PASSWORD'),
           database: configService.get('MYSQL_DB_NAME'),
-          entities: [User, Role, Job, Applicant],
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          cli: {
+            entitiesDir: __dirname + '/entities',
+          },
+          enumName: 'string',
+          debug: true,
+          verboseRetryLog: true,
           synchronize: true,
         };
       },

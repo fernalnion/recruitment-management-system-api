@@ -1,12 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { AppliedJobEntity } from './appliedJob.entity';
 
 @Entity()
-export class Applicant {
+export class ApplicantEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: false, length: 100 })
+  firstname: string;
+
   @Column({ length: 100 })
-  fullName: string;
+  lastname: string;
 
   @Column()
   email: string;
@@ -14,9 +18,17 @@ export class Applicant {
   @Column()
   mobile: string;
 
-  @Column()
-  totalExperinceInYear: number;
+  @Column({ default: 0 })
+  experienceInYears: number;
 
   @Column()
-  resume: string;
+  profileImagePath: string;
+
+  @Column()
+  resumePath: string;
+
+  @OneToMany(() => AppliedJobEntity, (appliedJob) => appliedJob.job, {
+    cascade: true,
+  })
+  appliedJobs: AppliedJobEntity[];
 }

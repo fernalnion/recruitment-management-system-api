@@ -1,18 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
+import { RoleEntity } from './role.entity';
+import { DepartmentEntity } from './department.entity';
+import { ScheduleEntity } from './schedules.entiry';
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
   username: string;
 
-  @Column()
+  @Column({ nullable: false })
   password: string;
-
-  @Column()
-  role: string;
 
   @Column({ unique: true })
   email: string;
@@ -20,12 +27,33 @@ export class User {
   @Column({ unique: true })
   mobile: string;
 
+  @Column({ nullable: false })
+  firstname: string;
+
+  @Column()
+  lastname: string;
+
+  @OneToOne(() => DepartmentEntity, (department) => department.id, {
+    cascade: true,
+  })
+  @JoinColumn()
+  department: string;
+
+  @OneToOne(() => RoleEntity, (role) => role.id, { cascade: true })
+  @JoinColumn()
+  role: RoleEntity;
+
   @Column('date')
   dob: Date;
 
-  @Column()
+  @Column({ default: false })
   isVerified: boolean;
 
-  @Column()
+  @Column({ default: false })
   isActive: boolean;
+
+  @ManyToOne(() => ScheduleEntity, (schedule) => schedule.users, {
+    cascade: true,
+  })
+  schedule: ScheduleEntity;
 }

@@ -5,9 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import configuration from './configuration';
+import { ApplicantModule } from './modules/applicant/applicant.module';
+import { AppliedJobController } from './modules/applied-job/applied-job.controller';
+import { AppliedJobModule } from './modules/applied-job/applied-job.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { DepartmentModule } from './modules/department/department.module';
+import { JobEventModule } from './modules/job-event/job-event.module';
+import { JobModule } from './modules/job/job.module';
+import { RoleModule } from './modules/role/role.module';
 import { UsersModule } from './modules/users/users.module';
+import { StartupService } from './services/startup.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ServiceModule } from './services/service.module';
 
 @Module({
   imports: [
@@ -38,10 +48,18 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       },
       inject: [ConfigService],
     }),
+    ServiceModule,
     UsersModule,
     AuthModule,
+    RoleModule,
+    DepartmentModule,
+    ApplicantModule,
+    AppliedJobModule,
+    CommentsModule,
+    JobEventModule,
+    JobModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, JwtStrategy, JwtService],
+  controllers: [AppController, AppliedJobController],
+  providers: [AppService, JwtStrategy, JwtService, StartupService],
 })
 export class AppModule {}

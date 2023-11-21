@@ -6,11 +6,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AppliedJobEntity } from './appliedJob.entity';
-import { DepartmentEntity } from './department.entity';
+import { AppliedJob } from './applied-job.entity';
+import { Department } from './department.entity';
 
 @Entity()
-export class JobEntity {
+export class Job {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,9 +21,7 @@ export class JobEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => DepartmentEntity, (department) => department.job, {
-    cascade: true,
-  })
+  @ManyToOne(() => Department, (department) => department.jobs)
   department: string;
 
   @Column({ type: 'int' })
@@ -32,8 +30,6 @@ export class JobEntity {
   @Column({ default: false })
   isActive: boolean;
 
-  @OneToMany(() => AppliedJobEntity, (appliedJob) => appliedJob.job, {
-    cascade: true,
-  })
-  appliedJobs: AppliedJobEntity[];
+  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.job)
+  appliedJobs: AppliedJob[];
 }

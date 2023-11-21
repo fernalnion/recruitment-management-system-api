@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AppliedJobEntity } from './appliedJob.entity';
+import { AppliedJob } from './applied-job.entity';
 
 @Entity()
-export class ApplicantEntity {
+export class Applicant {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -27,8 +27,6 @@ export class ApplicantEntity {
   @Column()
   resumePath: string;
 
-  @OneToMany(() => AppliedJobEntity, (appliedJob) => appliedJob.job, {
-    cascade: true,
-  })
-  appliedJobs: AppliedJobEntity[];
+  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.job)
+  appliedJobs: AppliedJob[];
 }

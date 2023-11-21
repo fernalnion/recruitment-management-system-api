@@ -1,17 +1,16 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
+  Entity,
+  ManyToMany,
   ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { RoleEntity } from './role.entity';
-import { DepartmentEntity } from './department.entity';
-import { ScheduleEntity } from './schedules.entiry';
+import { Department } from './department.entity';
+import { Role } from './role.entity';
+import { JobEvent } from './job-event.entity';
 
 @Entity()
-export class UserEntity {
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -33,15 +32,11 @@ export class UserEntity {
   @Column()
   lastname: string;
 
-  @OneToOne(() => DepartmentEntity, (department) => department.id, {
-    cascade: true,
-  })
-  @JoinColumn()
-  department: string;
+  @ManyToOne(() => Department, (department) => department.users)
+  department: Department;
 
-  @OneToOne(() => RoleEntity, (role) => role.id, { cascade: true })
-  @JoinColumn()
-  role: RoleEntity;
+  @ManyToOne(() => Role, (role) => role.users)
+  role: Role;
 
   @Column('date')
   dob: Date;
@@ -52,8 +47,6 @@ export class UserEntity {
   @Column({ default: false })
   isActive: boolean;
 
-  @ManyToOne(() => ScheduleEntity, (schedule) => schedule.users, {
-    cascade: true,
-  })
-  schedule: ScheduleEntity;
+  @ManyToMany(() => JobEvent, (jobEvent) => jobEvent.users)
+  jobEvents: JobEvent[];
 }

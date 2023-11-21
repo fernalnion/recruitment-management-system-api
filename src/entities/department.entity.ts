@@ -1,19 +1,21 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { JobEntity } from './job.entity';
+import { Job } from './job.entity';
+import { User } from './user.entity';
 
 @Entity()
-export class DepartmentEntity {
+export class Department {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   name: string;
 
   @Column({ default: false })
   isDefault: boolean;
 
-  @OneToMany(() => JobEntity, (job) => job.department, {
-    cascade: true,
-  })
-  job: JobEntity;
+  @OneToMany(() => Job, (job) => job.department)
+  jobs: Job[];
+
+  @OneToMany(() => User, (user) => user.department)
+  users: User[];
 }

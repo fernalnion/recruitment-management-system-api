@@ -1,8 +1,8 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { AppliedJobEntity } from './appliedJob.entity';
+import { AppliedJob } from './applied-job.entity';
 
 @Entity()
-export class CommentsEntity {
+export class Comment {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,8 +12,6 @@ export class CommentsEntity {
   @Column()
   description: string;
 
-  @ManyToOne(() => AppliedJobEntity, (appliedJob) => appliedJob.comments, {
-    cascade: true,
-  })
-  appliedJob: AppliedJobEntity;
+  @ManyToOne(() => AppliedJob, (appliedJob) => appliedJob.comments)
+  appliedJob: AppliedJob;
 }

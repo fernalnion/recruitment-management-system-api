@@ -5,7 +5,7 @@ import { BusinessModule } from 'src/business/business.module';
 
 @Module({
   imports: [BusinessModule],
-  providers: [JwtService],
   controllers: [DepartmentController],
+  providers: [JwtService],
 })
 export class DepartmentModule {}

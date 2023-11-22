@@ -1,9 +1,6 @@
-import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
-import {
-  Department,
-  IDepartment,
-  IDepartmentBase,
-} from 'src/entities/department.entity';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IDepartment, IDepartmentBase } from 'src/entities/department.entity';
+import { UserBaseResponse } from './User';
 
 class DepartmentBase implements IDepartmentBase {
   @ApiProperty({ type: String })
@@ -19,6 +16,9 @@ export class DepartmentBaseRespose
 {
   @ApiProperty({ type: Number })
   id: number = 0;
+
+  @ApiPropertyOptional({ type: () => UserBaseResponse })
+  users?: UserBaseResponse[];
 }
 
 export class DepartmentsRespose {
@@ -37,11 +37,5 @@ export class DepartmentRespose {
   data: DepartmentBaseRespose = new DepartmentBaseRespose();
 }
 
-export class DepartmentAddRequest extends OmitType(Department, [
-  'id',
-  'users',
-] as const) {}
-export class DepartmentUpdateRequest extends OmitType(Department, [
-  'id',
-  'users',
-] as const) {}
+export class DepartmentAddRequest extends DepartmentBase {}
+export class DepartmentUpdateRequest extends DepartmentBase {}

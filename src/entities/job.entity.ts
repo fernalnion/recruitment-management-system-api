@@ -3,14 +3,24 @@ import {
   Entity,
   Index,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AppliedJob } from './applied-job.entity';
-import { Department } from './department.entity';
+import { Department, IDepartment } from './department.entity';
+
+export interface IJobBase {
+  title: string;
+  description: string;
+  departmentid: IDepartment;
+  openings: number;
+  isActive: boolean;
+}
+
+export interface IJob extends IJobBase {
+  id: number;
+}
 
 @Entity()
-export class Job {
+export class Job implements IJob {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,15 +31,12 @@ export class Job {
   @Column()
   description: string;
 
-  @ManyToOne(() => Department, (department) => department.jobs)
-  department: string;
+  @ManyToOne(() => Department, (department) => department.id)
+  departmentid: IDepartment;
 
   @Column({ type: 'int' })
   openings: number;
 
   @Column({ default: false })
   isActive: boolean;
-
-  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.job)
-  appliedJobs: AppliedJob[];
 }

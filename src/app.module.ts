@@ -3,19 +3,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ApplicantModule } from './modules/applicant/applicant.module';
+import { BusinessModule } from './business/business.module';
+import configuration from './configuration';
 import { AppliedJobController } from './modules/applied-job/applied-job.controller';
-import { AppliedJobModule } from './modules/applied-job/applied-job.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { CommentsModule } from './modules/comments/comments.module';
-import { DepartmentModule } from './modules/department/department.module';
-import { JobEventModule } from './modules/job-event/job-event.module';
-import { JobModule } from './modules/job/job.module';
-import { RoleModule } from './modules/role/role.module';
 import { UsersModule } from './modules/users/users.module';
 import { StartupService } from './services/startup.service';
-import configuration from './configuration';
-import { BusinessModule } from './business/business.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -53,15 +47,9 @@ import { BusinessModule } from './business/business.module';
     //   inject: [ConfigurationService],
     // }),
     BusinessModule,
-    UsersModule,
     AuthModule,
+    UsersModule,
     RoleModule,
-    DepartmentModule,
-    ApplicantModule,
-    AppliedJobModule,
-    CommentsModule,
-    JobEventModule,
-    JobModule,
   ],
   controllers: [AppController, AppliedJobController],
   providers: [AppService, StartupService],

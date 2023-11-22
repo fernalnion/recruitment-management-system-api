@@ -1,19 +1,38 @@
+import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
 import {
   BeforeInsert,
   Column,
   Entity,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
-import { Department } from './department.entity';
-import { Role } from './role.entity';
-import { JobEvent } from './job-event.entity';
-import * as bcrypt from 'bcrypt';
+import { Department, IDepartment } from './department.entity';
+import { IRole, Role } from './role.entity';
+
+export interface IUserBase {
+  username: string;
+  password: string;
+  email: string;
+  mobile: string;
+  firstname: string;
+  lastname?: string;
+  departmentid: number;
+  roleid: number;
+  dob?: Date;
+}
+
+export interface IUser extends IUserBase {
+  id: number;
+  department: IDepartment;
+  role: IRole;
+  isVerified: boolean;
+  isActive: boolean;
+}
 
 @Entity()
-export class User {
+export class User implements IUser {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -42,10 +61,18 @@ export class User {
   lastname: string;
 
   @ManyToOne(() => Department, (department) => department.users)
-  department: Department;
+  @JoinColumn({ name: 'departmentid' })
+  department: IDepartment;
+
+  @Column({ nullable: true })
+  departmentid: number;
 
   @ManyToOne(() => Role, (role) => role.users)
-  role: Role;
+  @JoinColumn({ name: 'roleid' })
+  role: IRole;
+
+  @Column({ nullable: true })
+  roleid: number;
 
   @Column('date')
   dob: Date;
@@ -55,7 +82,4 @@ export class User {
 
   @Column({ default: false })
   isActive: boolean;
-
-  @ManyToMany(() => JobEvent, (jobEvent) => jobEvent.users)
-  jobEvents: JobEvent[];
 }

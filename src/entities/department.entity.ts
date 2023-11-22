@@ -1,9 +1,17 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Job } from './job.entity';
-import { User } from './user.entity';
+import { IUser, User } from './user.entity';
 
+export interface IDepartmentBase {
+  name: string;
+  isDefault: boolean;
+}
+
+export interface IDepartment extends IDepartmentBase {
+  id: number;
+  users?: IUser[];
+}
 @Entity()
-export class Department {
+export class Department implements IDepartment {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,9 +21,6 @@ export class Department {
   @Column({ default: false })
   isDefault: boolean;
 
-  @OneToMany(() => Job, (job) => job.department)
-  jobs: Job[];
-
   @OneToMany(() => User, (user) => user.department)
-  users: User[];
+  users: IUser[];
 }

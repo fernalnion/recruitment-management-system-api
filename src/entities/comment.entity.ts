@@ -1,8 +1,18 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AppliedJob } from './applied-job.entity';
 
+export interface ICommentBase {
+  title: string;
+  description: string;
+  appliedJobid: number;
+}
+
+export interface IComment extends ICommentBase {
+  id: number;
+}
+
 @Entity()
-export class Comment {
+export class Comment implements IComment {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,6 +22,6 @@ export class Comment {
   @Column()
   description: string;
 
-  @ManyToOne(() => AppliedJob, (appliedJob) => appliedJob.comments)
-  appliedJob: AppliedJob;
+  @ManyToOne(() => AppliedJob, (appliedJob) => appliedJob.id)
+  appliedJobid: number;
 }

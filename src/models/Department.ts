@@ -1,7 +1,11 @@
 import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
-import { Department } from 'src/entities/department.entity';
+import {
+  Department,
+  IDepartment,
+  IDepartmentBase,
+} from 'src/entities/department.entity';
 
-class DepartmentBase {
+class DepartmentBase implements IDepartmentBase {
   @ApiProperty({ type: String })
   name: string = '';
 
@@ -9,7 +13,10 @@ class DepartmentBase {
   isDefault: boolean;
 }
 
-export class DepartmentBaseRespose extends DepartmentBase {
+export class DepartmentBaseRespose
+  extends DepartmentBase
+  implements IDepartment
+{
   @ApiProperty({ type: Number })
   id: number = 0;
 }
@@ -18,25 +25,23 @@ export class DepartmentsRespose {
   @ApiProperty({ type: Boolean })
   error: boolean;
 
-  @ApiProperty({ type: () => [Department] })
-  data: Department[] = [];
+  @ApiProperty({ type: () => [DepartmentBaseRespose] })
+  data: DepartmentBaseRespose[] = [new DepartmentBaseRespose()];
 }
 
 export class DepartmentRespose {
   @ApiProperty({ type: Boolean })
   error: boolean;
 
-  @ApiProperty({ type: () => Department })
-  data: Department = new Department();
+  @ApiProperty({ type: () => DepartmentBaseRespose })
+  data: DepartmentBaseRespose = new DepartmentBaseRespose();
 }
 
 export class DepartmentAddRequest extends OmitType(Department, [
   'id',
-  'jobs',
   'users',
 ] as const) {}
 export class DepartmentUpdateRequest extends OmitType(Department, [
   'id',
-  'jobs',
   'users',
 ] as const) {}

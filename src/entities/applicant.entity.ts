@@ -1,8 +1,20 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { AppliedJob } from './applied-job.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+export interface IApplicantBase {
+  firstname: string;
+  lastname: string;
+  email: string;
+  mobile: string;
+  experienceInYears: number;
+  profileImagePath: string;
+  resumePath: string;
+}
+export interface IApplicant extends IApplicantBase {
+  id: number;
+}
 
 @Entity()
-export class Applicant {
+export class Applicant implements IApplicant {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,7 +38,4 @@ export class Applicant {
 
   @Column()
   resumePath: string;
-
-  @OneToMany(() => AppliedJob, (appliedJob) => appliedJob.job)
-  appliedJobs: AppliedJob[];
 }

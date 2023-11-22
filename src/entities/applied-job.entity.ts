@@ -1,18 +1,19 @@
 import { JOB_APPLIED_STATUS_ENUM } from 'src/enums/status.enum';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Applicant } from './applicant.entity';
-import { Comment } from './comment.entity';
 import { Job } from './job.entity';
-import { JobEvent } from './job-event.entity';
 
+export interface IAppliedJobBase {
+  status: JOB_APPLIED_STATUS_ENUM;
+  jobid: number;
+  applicantid: number;
+}
+
+export interface IAppliedJob extends IAppliedJobBase {
+  id: number;
+}
 @Entity()
-export class AppliedJob {
+export class AppliedJob implements IAppliedJob {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,15 +24,9 @@ export class AppliedJob {
   })
   status: JOB_APPLIED_STATUS_ENUM;
 
-  @ManyToOne(() => Job, (job) => job.appliedJobs)
-  job: Job;
+  @ManyToOne(() => Job, (job) => job.id)
+  jobid: number;
 
-  @ManyToOne(() => Applicant, (applicant) => applicant.appliedJobs)
-  applicant: Applicant;
-
-  @OneToMany(() => JobEvent, (scheduler) => scheduler.appliedJob)
-  jobEvents: JobEvent[];
-
-  @OneToMany(() => Comment, (comment) => comment.appliedJob)
-  comments: Comment[];
+  @ManyToOne(() => Applicant, (applicant) => applicant.id)
+  applicantid: number;
 }

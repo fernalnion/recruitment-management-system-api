@@ -21,7 +21,6 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { UserService } from 'src/business/user.service';
-import { User } from 'src/entities/user.entity';
 import { BooleanResponse } from 'src/models/BooleanResponse';
 import { ErrorResponse } from 'src/models/ErrorResponse';
 import {
@@ -51,10 +50,11 @@ import { AuthGuard } from '../auth/auth.guard';
 })
 @ApiExtraModels(
   ErrorResponse,
-  UsersResponse,
   BooleanResponse,
   UserAddRequest,
+  UserResponse,
   UserUpdateRequest,
+  UsersResponse,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -68,7 +68,7 @@ export class UsersController {
   })
   @HttpCode(HttpStatus.CREATED)
   @ApiBody({ type: UserAddRequest })
-  async createUser(@Body() payload: User) {
+  async createUser(@Body() payload: UserAddRequest) {
     await this.userService.create(payload);
     return {
       data: true,
@@ -82,10 +82,8 @@ export class UsersController {
     schema: { $ref: getSchemaPath(UsersResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  async getAllUsers() {
-    const users = await this.userService.findAll();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const data = users.map(({ password, ...user }) => user);
+  async getAllUsers(): Promise<UsersResponse> {
+    const data = await this.userService.findAll();
     return {
       data,
       error: false,
@@ -102,7 +100,7 @@ export class UsersController {
   async getUser(@Param('id', new ParseIntPipe()) id: number) {
     const user = await this.userService.findOne(id);
     if (!user) {
-      throw new Error('Invalid user');
+      throw new Error('Invalid User');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -116,7 +114,7 @@ export class UsersController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(UserUpdateRequest) },
+    schema: { $ref: getSchemaPath(UserResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: Number, required: true })
@@ -124,9 +122,13 @@ export class UsersController {
   async updateUser(
     @Param('id', new ParseIntPipe()) id: number,
     @Body() payload: UserUpdateRequest,
-  ) {
+  ): Promise<UserResponse> {
+    const data = await this.userService.update(id, payload);
+    if (!data) {
+      throw new Error('Invalid User');
+    }
     return {
-      data: payload,
+      data,
       error: false,
     };
   }
@@ -134,7 +136,7 @@ export class UsersController {
   @Put(':id/:status')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(UserAddRequest) },
+    schema: { $ref: getSchemaPath(UserResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: Number, required: true })
@@ -142,10 +144,13 @@ export class UsersController {
   async updateUserStatus(
     @Param('id', new ParseIntPipe()) id: number,
     @Param('status', new ParseIntPipe()) status: boolean,
-  ) {
-    await this.userService.update(id, { isActive: status });
+  ): Promise<UserResponse> {
+    const data = await this.userService.update(id, { isActive: status });
+    if (!data) {
+      throw new Error('Invalid User');
+    }
     return {
-      data: true,
+      data,
       error: false,
     };
   }

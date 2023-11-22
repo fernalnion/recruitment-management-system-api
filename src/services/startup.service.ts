@@ -43,11 +43,11 @@ export class StartupService implements OnApplicationBootstrap {
         password,
         email: 'admin@internal.com',
         mobile: '+91-9999999999',
-        department: defaultDepartment,
+        departmentid: defaultDepartment.id,
         dob: new Date('1990-01-01'),
         firstname: 'Super',
         lastname: 'Admin',
-        role: defaultRole,
+        roleid: defaultRole.id,
         isActive: true,
         isVerified: true,
       });

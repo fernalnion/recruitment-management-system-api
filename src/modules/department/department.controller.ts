@@ -49,9 +49,10 @@ import { ErrorResponse } from 'src/models/ErrorResponse';
 })
 @ApiExtraModels(
   ErrorResponse,
-  DepartmentRespose,
   DepartmentAddRequest,
+  DepartmentRespose,
   DepartmentUpdateRequest,
+  DepartmentsRespose,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -98,7 +99,7 @@ export class DepartmentController {
   ): Promise<DepartmentRespose> {
     const data = await this.departmentService.findOne(id);
     if (!data) {
-      throw new Error('Invalid user');
+      throw new Error('Invalid Department');
     }
     return {
       data,

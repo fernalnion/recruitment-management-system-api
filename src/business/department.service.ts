@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Department } from 'src/entities/department.entity';
+import { Department, IDepartment } from 'src/entities/department.entity';
+import {
+  DepartmentAddRequest,
+  DepartmentUpdateRequest,
+} from 'src/models/Department';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -10,27 +14,27 @@ export class DepartmentService {
     private readonly departmentRepository: Repository<Department>,
   ) {}
 
-  findAll = (): Promise<Department[]> => {
+  findAll = (): Promise<IDepartment[]> => {
     return this.departmentRepository.find();
   };
 
-  findByName = (name: string): Promise<Department | null> => {
+  findByName = (name: string): Promise<IDepartment | null> => {
     return this.departmentRepository.findOne({ where: { name } });
   };
 
-  findOne = (id: number): Promise<Department | null> => {
+  findOne = (id: number): Promise<IDepartment | null> => {
     return this.departmentRepository.findOne({ where: { id } });
   };
 
-  create = (departmentData: Partial<Department>): Promise<Department> => {
+  create = (departmentData: DepartmentAddRequest): Promise<IDepartment> => {
     const department = this.departmentRepository.create(departmentData);
     return this.departmentRepository.save(department);
   };
 
   update = async (
     id: number,
-    departmentData: Partial<Department>,
-  ): Promise<Department | null> => {
+    departmentData: Partial<DepartmentUpdateRequest>,
+  ): Promise<IDepartment | null> => {
     await this.departmentRepository.update(id, departmentData);
     return this.departmentRepository.findOne({ where: { id } });
   };

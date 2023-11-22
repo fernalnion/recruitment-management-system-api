@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { User } from './user.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { IUser, User } from './user.entity';
+export interface IRoleBase {
+  name: string;
+  isDefault?: boolean;
+}
+
+export interface IRole extends IRoleBase {
+  id: number;
+  users?: IUser[];
+}
 
 @Entity()
 export class Role {
@@ -13,5 +22,5 @@ export class Role {
   isDefault: boolean;
 
   @OneToMany(() => User, (user) => user.role)
-  users: User[];
+  users: IUser[];
 }

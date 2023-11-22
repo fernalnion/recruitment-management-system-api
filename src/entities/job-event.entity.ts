@@ -1,12 +1,15 @@
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AppliedJob } from './applied-job.entity';
-import { User } from './user.entity';
+
+export interface IJobEventBase {
+  isCanceled: boolean;
+  timestamp: Date;
+  appliedjobid: number;
+}
+
+export interface IJobEvent extends IJobEventBase {
+  id: number;
+}
 
 @Entity()
 export class JobEvent {
@@ -19,9 +22,6 @@ export class JobEvent {
   @Column('datetime')
   timestamp: Date;
 
-  @ManyToOne(() => AppliedJob, (appliedJob) => appliedJob.jobEvents)
-  appliedJob: AppliedJob;
-
-  @ManyToMany(() => User, (user) => user.jobEvents)
-  users: User[];
+  @ManyToOne(() => AppliedJob, (appliedJob) => appliedJob.id)
+  appliedjobid: number;
 }

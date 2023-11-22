@@ -1,13 +1,16 @@
 import {
+  BeforeInsert,
   Column,
   Entity,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Department } from './department.entity';
 import { Role } from './role.entity';
 import { JobEvent } from './job-event.entity';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class User {
@@ -17,8 +20,14 @@ export class User {
   @Column({ unique: true })
   username: string;
 
+  @Exclude()
   @Column({ nullable: false })
   password: string;
+
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 
   @Column({ unique: true })
   email: string;

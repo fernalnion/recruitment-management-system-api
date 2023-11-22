@@ -11,11 +11,20 @@ export class UserService {
   ) {}
 
   findAll = (): Promise<User[]> => {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      relations: {
+        role: true,
+      },
+    });
   };
 
   findOne = (id: number): Promise<User | null> => {
-    return this.userRepository.findOne({ where: { id } });
+    return this.userRepository.findOne({
+      where: { id },
+      relations: {
+        role: true,
+      },
+    });
   };
 
   create = (userData: Partial<User>): Promise<User> => {
@@ -28,7 +37,7 @@ export class UserService {
     userData: Partial<User>,
   ): Promise<User | null> => {
     await this.userRepository.update(id, userData);
-    return this.userRepository.findOne({ where: { id } });
+    return this.findOne(id);
   };
 
   remove = async (id: number): Promise<void> => {
@@ -36,6 +45,11 @@ export class UserService {
   };
 
   findByUsername = (username: string): Promise<User | null> => {
-    return this.userRepository.findOne({ where: { username } });
+    return this.userRepository.findOne({
+      where: { username },
+      relations: {
+        role: true,
+      },
+    });
   };
 }

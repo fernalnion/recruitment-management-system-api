@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import configuration from './configuration';
 import { ApplicantModule } from './modules/applicant/applicant.module';
 import { AppliedJobController } from './modules/applied-job/applied-job.controller';
 import { AppliedJobModule } from './modules/applied-job/applied-job.module';
@@ -16,39 +14,45 @@ import { JobModule } from './modules/job/job.module';
 import { RoleModule } from './modules/role/role.module';
 import { UsersModule } from './modules/users/users.module';
 import { StartupService } from './services/startup.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { ServiceModule } from './services/service.module';
+import configuration from './configuration';
+import { BusinessModule } from './business/business.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '10m' },
-    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         return {
           type: 'mysql',
-          host: configService.get('MYSQL_HOST'),
-          port: +configService.get('MYSQL_PORT'),
-          username: configService.get('MYSQL_USER'),
-          password: configService.get('MYSQL_PASSWORD'),
-          database: configService.get('MYSQL_DB_NAME'),
+          host: configService.get<string>('database.host'),
+          port: +configService.get('database.port'),
+          username: configService.get<string>('database.username'),
+          password: configService.get<string>('database.password'),
+          database: configService.get<string>('database.database'),
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           cli: {
             entitiesDir: __dirname + '/entities',
           },
           enumName: 'string',
-          debug: true,
-          verboseRetryLog: true,
-          synchronize: true,
+          debug: Boolean(configService.get('database.debug') ?? false),
+          verboseRetryLog: Boolean(
+            configService.get('database.debug') ?? false,
+          ),
+          synchronize: Boolean(
+            configService.get('database.synchronize') ?? false,
+          ),
         };
       },
       inject: [ConfigService],
     }),
-    ServiceModule,
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule], // Import ConfigModule
+    //   useFactory: (configService: ConfigurationService) =>
+    //     configService.typeOrmConfig,
+    //   inject: [ConfigurationService],
+    // }),
+    BusinessModule,
     UsersModule,
     AuthModule,
     RoleModule,
@@ -60,6 +64,6 @@ import { ServiceModule } from './services/service.module';
     JobModule,
   ],
   controllers: [AppController, AppliedJobController],
-  providers: [AppService, JwtStrategy, JwtService, StartupService],
+  providers: [AppService, StartupService],
 })
 export class AppModule {}

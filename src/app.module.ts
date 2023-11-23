@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { StartupService } from './services/startup.service';
 import { DepartmentModule } from './modules/department/department.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DepartmentModule } from './modules/department/department.module';
     AuthModule,
     UsersModule,
     DepartmentModule,
+    RoleModule,
   ],
   controllers: [AppController, AppliedJobController],
   providers: [AppService, StartupService],

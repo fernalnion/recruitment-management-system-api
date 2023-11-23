@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IRole, IRoleBase } from 'src/schemas/role.schema';
+import Mongoose from 'mongoose';
 
 export class RoleAddRequest implements IRoleBase {
   @ApiProperty({ type: Boolean })
@@ -12,8 +13,8 @@ export class RoleAddRequest implements IRoleBase {
 export class RoleUpdateRequest extends RoleAddRequest implements IRoleBase {}
 
 export class RoleBaseResponse extends RoleAddRequest implements IRole {
-  @ApiPropertyOptional({ type: String })
-  _id?: string;
+  @ApiPropertyOptional({ type: () => Mongoose.Schema.Types.ObjectId })
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 export class RoleResponse {

@@ -5,12 +5,12 @@ import { JOB_APPLIED_STATUS_ENUM } from 'src/enums/status.enum';
 export interface IApplicationBase {
   status: JOB_APPLIED_STATUS_ENUM;
   appliedAt: Date;
-  applicant: string;
-  job: string;
+  applicant: Mongoose.Schema.Types.ObjectId;
+  job: Mongoose.Schema.Types.ObjectId;
 }
 
 export interface IApplication extends IApplicationBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()
@@ -26,10 +26,10 @@ export class Application implements IApplication {
   appliedAt: Date;
 
   @Prop({ type: Mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
-  applicant: string;
+  applicant: Mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: Mongoose.Schema.Types.ObjectId, ref: 'Job', required: true })
-  job: string;
+  job: Mongoose.Schema.Types.ObjectId;
 }
 
 export type ApplicationDocument = Mongoose.HydratedDocument<Application>;

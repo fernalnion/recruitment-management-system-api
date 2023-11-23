@@ -19,22 +19,22 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { RoleService } from 'src/business/role.service';
+import { ApplicationService } from 'src/business/application.service';
+import {
+  ApplicationAddRequest,
+  ApplicationResponse,
+  ApplicationUpdateRequest,
+  ApplicationsResponse,
+} from 'src/models/ApplicationDto';
 import { BooleanResponse } from 'src/models/BooleanResponse';
 import { ErrorResponse } from 'src/models/ErrorResponse';
-import {
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
-} from 'src/models/RoleDto';
 import { AuthGuard } from '../auth/auth.guard';
 
-@ApiTags('Role')
-@Controller('role')
+@ApiTags('Application')
+@Controller('application')
 @ApiResponse({
   status: 400,
-  description: 'Invalid Role details in response',
+  description: 'Invalid Application details in response',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
 @ApiResponse({
@@ -50,24 +50,24 @@ import { AuthGuard } from '../auth/auth.guard';
 @ApiExtraModels(
   ErrorResponse,
   BooleanResponse,
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
+  ApplicationAddRequest,
+  ApplicationResponse,
+  ApplicationUpdateRequest,
+  ApplicationsResponse,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+export class ApplicationController {
+  constructor(private readonly applicationService: ApplicationService) {}
   @Post()
   @ApiResponse({
     status: 200,
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.CREATED)
-  @ApiBody({ type: RoleAddRequest })
-  async createUser(@Body() payload: RoleAddRequest) {
-    await this.roleService.create(payload);
+  @ApiBody({ type: ApplicationAddRequest })
+  async createApplication(@Body() payload: ApplicationAddRequest) {
+    await this.applicationService.create(payload);
     return {
       data: true,
       error: false,
@@ -77,11 +77,11 @@ export class RoleController {
   @Get('all')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RolesResponse) },
+    schema: { $ref: getSchemaPath(ApplicationsResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  async getAllRoles(): Promise<RolesResponse> {
-    const data = await this.roleService.findAll();
+  async getAllApplications(): Promise<ApplicationsResponse> {
+    const data = await this.applicationService.findAll();
     return {
       data,
       error: false,
@@ -91,14 +91,14 @@ export class RoleController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleResponse) },
+    schema: { $ref: getSchemaPath(ApplicationResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async getRole(@Param('id') id: string): Promise<RoleResponse> {
-    const data = await this.roleService.findOne(id);
+  async getApplication(@Param('id') id: string): Promise<ApplicationResponse> {
+    const data = await this.applicationService.findOne(id);
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Application');
     }
     return {
       data,
@@ -109,19 +109,19 @@ export class RoleController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleUpdateRequest) },
+    schema: { $ref: getSchemaPath(ApplicationUpdateRequest) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  @ApiBody({ type: RoleUpdateRequest })
-  async updateRole(
+  @ApiBody({ type: ApplicationUpdateRequest })
+  async updateApplication(
     @Param('id') id: string,
-    @Body() payload: RoleUpdateRequest,
-  ): Promise<RoleResponse> {
-    const data = await this.roleService.update(id, payload);
+    @Body() payload: ApplicationUpdateRequest,
+  ): Promise<ApplicationResponse> {
+    const data = await this.applicationService.update(id, payload);
 
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Application');
     }
     return {
       data,
@@ -136,8 +136,8 @@ export class RoleController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async deleteRole(@Param('id') id: string) {
-    await this.roleService.remove(id);
+  async deleteApplication(@Param('id') id: string) {
+    await this.applicationService.remove(id);
     return {
       data: true,
       error: false,

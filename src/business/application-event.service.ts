@@ -4,8 +4,8 @@ import { Model } from 'mongoose';
 import {
   ApplicationEvent,
   IApplicationEvent,
+  IApplicationEventBase,
 } from 'src/schemas/application-event.schema';
-import { ICommentBase } from 'src/schemas/comment.schema';
 
 @Injectable()
 export class ApplicationEventService {
@@ -22,7 +22,7 @@ export class ApplicationEventService {
     return this.applicationEventModel.findOne({ _id });
   }
 
-  async create(data: ICommentBase): Promise<IApplicationEvent> {
+  async create(data: IApplicationEventBase): Promise<IApplicationEvent> {
     const applicationevent = new this.applicationEventModel(data);
     return applicationevent.save();
   }

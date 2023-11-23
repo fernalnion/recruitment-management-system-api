@@ -5,12 +5,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BusinessModule } from './business/business.module';
 import configuration from './configuration';
-import { AppliedJobController } from './modules/applied-job/applied-job.controller';
+import { ApplicationController } from './modules/application/application.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { StartupService } from './services/startup.service';
 import { DepartmentModule } from './modules/department/department.module';
 import { RoleModule } from './modules/role/role.module';
+import { ApplicantModule } from './modules/applicant/applicant.module';
+import { ApplicationModule } from './modules/application/application.module';
+import { ApplicationEventModule } from './modules/application-event/application-event.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { JobModule } from './modules/job/job.module';
+import { ResumeModule } from './modules/resume/resume.module';
 
 @Module({
   imports: [
@@ -22,11 +28,17 @@ import { RoleModule } from './modules/role/role.module';
     }),
     BusinessModule,
     AuthModule,
-    UsersModule,
     DepartmentModule,
     RoleModule,
+    UsersModule,
+    ApplicantModule,
+    ApplicationModule,
+    ApplicationEventModule,
+    CommentModule,
+    JobModule,
+    ResumeModule,
   ],
-  controllers: [AppController, AppliedJobController],
+  controllers: [AppController, ApplicationController],
   providers: [AppService, StartupService],
 })
 export class AppModule {}

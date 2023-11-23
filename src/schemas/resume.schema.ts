@@ -3,12 +3,12 @@ import Mongoose from 'mongoose';
 
 export interface IResumeBase {
   filepath: string;
-  applicant: string;
+  applicant: Mongoose.Schema.Types.ObjectId;
   skills: string[];
 }
 
 export interface IResume extends IResumeBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()
@@ -22,7 +22,7 @@ export class Resume implements IResume {
     required: true,
     unique: true,
   })
-  applicant: string;
+  applicant: Mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: [{ type: String }] })
   skills: string[];

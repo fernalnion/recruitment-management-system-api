@@ -9,7 +9,7 @@ export interface IApplicantBase {
   profilepath: string;
 }
 export interface IApplicant extends IApplicantBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()

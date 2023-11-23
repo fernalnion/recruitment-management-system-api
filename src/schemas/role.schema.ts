@@ -7,7 +7,7 @@ export interface IRoleBase {
 }
 
 export interface IRole extends IRoleBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()

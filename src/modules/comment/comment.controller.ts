@@ -19,22 +19,22 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { RoleService } from 'src/business/role.service';
+import { CommentService } from 'src/business/comment.service';
 import { BooleanResponse } from 'src/models/BooleanResponse';
-import { ErrorResponse } from 'src/models/ErrorResponse';
 import {
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
-} from 'src/models/RoleDto';
+  CommentAddRequest,
+  CommentResponse,
+  CommentUpdateRequest,
+  CommentsResponse,
+} from 'src/models/CommentDto';
+import { ErrorResponse } from 'src/models/ErrorResponse';
 import { AuthGuard } from '../auth/auth.guard';
 
-@ApiTags('Role')
-@Controller('role')
+@ApiTags('Comment')
+@Controller('comment')
 @ApiResponse({
   status: 400,
-  description: 'Invalid Role details in response',
+  description: 'Invalid Comment details in response',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
 @ApiResponse({
@@ -50,24 +50,24 @@ import { AuthGuard } from '../auth/auth.guard';
 @ApiExtraModels(
   ErrorResponse,
   BooleanResponse,
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
+  CommentAddRequest,
+  CommentResponse,
+  CommentUpdateRequest,
+  CommentsResponse,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+export class CommentController {
+  constructor(private readonly commentService: CommentService) {}
   @Post()
   @ApiResponse({
     status: 200,
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.CREATED)
-  @ApiBody({ type: RoleAddRequest })
-  async createUser(@Body() payload: RoleAddRequest) {
-    await this.roleService.create(payload);
+  @ApiBody({ type: CommentAddRequest })
+  async createComment(@Body() payload: CommentAddRequest) {
+    await this.commentService.create(payload);
     return {
       data: true,
       error: false,
@@ -77,11 +77,11 @@ export class RoleController {
   @Get('all')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RolesResponse) },
+    schema: { $ref: getSchemaPath(CommentsResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  async getAllRoles(): Promise<RolesResponse> {
-    const data = await this.roleService.findAll();
+  async getAllComments(): Promise<CommentsResponse> {
+    const data = await this.commentService.findAll();
     return {
       data,
       error: false,
@@ -91,14 +91,14 @@ export class RoleController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleResponse) },
+    schema: { $ref: getSchemaPath(CommentResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async getRole(@Param('id') id: string): Promise<RoleResponse> {
-    const data = await this.roleService.findOne(id);
+  async getComment(@Param('id') id: string): Promise<CommentResponse> {
+    const data = await this.commentService.findOne(id);
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Comment');
     }
     return {
       data,
@@ -109,19 +109,19 @@ export class RoleController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleUpdateRequest) },
+    schema: { $ref: getSchemaPath(CommentUpdateRequest) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  @ApiBody({ type: RoleUpdateRequest })
-  async updateRole(
+  @ApiBody({ type: CommentUpdateRequest })
+  async updateComment(
     @Param('id') id: string,
-    @Body() payload: RoleUpdateRequest,
-  ): Promise<RoleResponse> {
-    const data = await this.roleService.update(id, payload);
+    @Body() payload: CommentUpdateRequest,
+  ): Promise<CommentResponse> {
+    const data = await this.commentService.update(id, payload);
 
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Comment');
     }
     return {
       data,
@@ -136,8 +136,8 @@ export class RoleController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async deleteRole(@Param('id') id: string) {
-    await this.roleService.remove(id);
+  async deleteComment(@Param('id') id: string) {
+    await this.commentService.remove(id);
     return {
       data: true,
       error: false,

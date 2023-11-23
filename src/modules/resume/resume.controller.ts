@@ -19,22 +19,23 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { RoleService } from 'src/business/role.service';
+import { ResumeService } from 'src/business/resume.service';
 import { BooleanResponse } from 'src/models/BooleanResponse';
 import { ErrorResponse } from 'src/models/ErrorResponse';
 import {
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
-} from 'src/models/RoleDto';
+  ResumeAddRequest,
+  ResumeResponse,
+  ResumeUpdateRequest,
+  ResumesResponse,
+} from 'src/models/ResumeDto';
 import { AuthGuard } from '../auth/auth.guard';
 
-@ApiTags('Role')
-@Controller('role')
+@ApiTags('Resume')
+@Controller('resume')
+@Controller('job')
 @ApiResponse({
   status: 400,
-  description: 'Invalid Role details in response',
+  description: 'Invalid Job details in response',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
 @ApiResponse({
@@ -50,24 +51,24 @@ import { AuthGuard } from '../auth/auth.guard';
 @ApiExtraModels(
   ErrorResponse,
   BooleanResponse,
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
+  ResumeAddRequest,
+  ResumeResponse,
+  ResumeUpdateRequest,
+  ResumesResponse,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+export class ResumeController {
+  constructor(private readonly resumeService: ResumeService) {}
   @Post()
   @ApiResponse({
     status: 200,
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.CREATED)
-  @ApiBody({ type: RoleAddRequest })
-  async createUser(@Body() payload: RoleAddRequest) {
-    await this.roleService.create(payload);
+  @ApiBody({ type: ResumeAddRequest })
+  async createResume(@Body() payload: ResumeAddRequest) {
+    await this.resumeService.create(payload);
     return {
       data: true,
       error: false,
@@ -77,11 +78,11 @@ export class RoleController {
   @Get('all')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RolesResponse) },
+    schema: { $ref: getSchemaPath(ResumesResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  async getAllRoles(): Promise<RolesResponse> {
-    const data = await this.roleService.findAll();
+  async getAllComments(): Promise<ResumesResponse> {
+    const data = await this.resumeService.findAll();
     return {
       data,
       error: false,
@@ -91,14 +92,14 @@ export class RoleController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleResponse) },
+    schema: { $ref: getSchemaPath(ResumeResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async getRole(@Param('id') id: string): Promise<RoleResponse> {
-    const data = await this.roleService.findOne(id);
+  async getResume(@Param('id') id: string): Promise<ResumeResponse> {
+    const data = await this.resumeService.findOne(id);
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Resume');
     }
     return {
       data,
@@ -109,19 +110,19 @@ export class RoleController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleUpdateRequest) },
+    schema: { $ref: getSchemaPath(ResumeUpdateRequest) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  @ApiBody({ type: RoleUpdateRequest })
-  async updateRole(
+  @ApiBody({ type: ResumeUpdateRequest })
+  async updateResume(
     @Param('id') id: string,
-    @Body() payload: RoleUpdateRequest,
-  ): Promise<RoleResponse> {
-    const data = await this.roleService.update(id, payload);
+    @Body() payload: ResumeUpdateRequest,
+  ): Promise<ResumeResponse> {
+    const data = await this.resumeService.update(id, payload);
 
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Resume');
     }
     return {
       data,
@@ -136,8 +137,8 @@ export class RoleController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async deleteRole(@Param('id') id: string) {
-    await this.roleService.remove(id);
+  async deleteResume(@Param('id') id: string) {
+    await this.resumeService.remove(id);
     return {
       data: true,
       error: false,

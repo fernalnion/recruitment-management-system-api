@@ -19,22 +19,22 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { RoleService } from 'src/business/role.service';
+import { ApplicationEventService } from 'src/business/application-event.service';
+import {
+  ApplicationEventAddRequest,
+  ApplicationEventResponse,
+  ApplicationEventUpdateRequest,
+  ApplicationEventsResponse,
+} from 'src/models/ApplicationEventDto';
 import { BooleanResponse } from 'src/models/BooleanResponse';
 import { ErrorResponse } from 'src/models/ErrorResponse';
-import {
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
-} from 'src/models/RoleDto';
 import { AuthGuard } from '../auth/auth.guard';
 
-@ApiTags('Role')
-@Controller('role')
+@ApiTags('Application Even')
+@Controller('application-event')
 @ApiResponse({
   status: 400,
-  description: 'Invalid Role details in response',
+  description: 'Invalid Application Event details in response',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
 @ApiResponse({
@@ -50,24 +50,26 @@ import { AuthGuard } from '../auth/auth.guard';
 @ApiExtraModels(
   ErrorResponse,
   BooleanResponse,
-  RoleAddRequest,
-  RoleResponse,
-  RoleUpdateRequest,
-  RolesResponse,
+  ApplicationEventAddRequest,
+  ApplicationEventResponse,
+  ApplicationEventUpdateRequest,
+  ApplicationEventsResponse,
 )
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+export class ApplicationEventController {
+  constructor(
+    private readonly applicationEventService: ApplicationEventService,
+  ) {}
   @Post()
   @ApiResponse({
     status: 200,
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.CREATED)
-  @ApiBody({ type: RoleAddRequest })
-  async createUser(@Body() payload: RoleAddRequest) {
-    await this.roleService.create(payload);
+  @ApiBody({ type: ApplicationEventAddRequest })
+  async createApplicationEvent(@Body() payload: ApplicationEventAddRequest) {
+    await this.applicationEventService.create(payload);
     return {
       data: true,
       error: false,
@@ -77,11 +79,11 @@ export class RoleController {
   @Get('all')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RolesResponse) },
+    schema: { $ref: getSchemaPath(ApplicationEventsResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  async getAllRoles(): Promise<RolesResponse> {
-    const data = await this.roleService.findAll();
+  async getAllApplications(): Promise<ApplicationEventsResponse> {
+    const data = await this.applicationEventService.findAll();
     return {
       data,
       error: false,
@@ -91,14 +93,16 @@ export class RoleController {
   @Get(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleResponse) },
+    schema: { $ref: getSchemaPath(ApplicationEventResponse) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async getRole(@Param('id') id: string): Promise<RoleResponse> {
-    const data = await this.roleService.findOne(id);
+  async getApplicationEvent(
+    @Param('id') id: string,
+  ): Promise<ApplicationEventResponse> {
+    const data = await this.applicationEventService.findOne(id);
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Application Event');
     }
     return {
       data,
@@ -109,19 +113,19 @@ export class RoleController {
   @Put(':id')
   @ApiResponse({
     status: 200,
-    schema: { $ref: getSchemaPath(RoleUpdateRequest) },
+    schema: { $ref: getSchemaPath(ApplicationEventUpdateRequest) },
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  @ApiBody({ type: RoleUpdateRequest })
-  async updateRole(
+  @ApiBody({ type: ApplicationEventUpdateRequest })
+  async updateApplicationEvent(
     @Param('id') id: string,
-    @Body() payload: RoleUpdateRequest,
-  ): Promise<RoleResponse> {
-    const data = await this.roleService.update(id, payload);
+    @Body() payload: ApplicationEventUpdateRequest,
+  ): Promise<ApplicationEventResponse> {
+    const data = await this.applicationEventService.update(id, payload);
 
     if (!data) {
-      throw new Error('Invalid Role');
+      throw new Error('Invalid Application Event');
     }
     return {
       data,
@@ -136,8 +140,8 @@ export class RoleController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async deleteRole(@Param('id') id: string) {
-    await this.roleService.remove(id);
+  async deleteApplicationEvent(@Param('id') id: string) {
+    await this.applicationEventService.remove(id);
     return {
       data: true,
       error: false,

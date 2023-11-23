@@ -4,7 +4,7 @@ import Mongoose from 'mongoose';
 export interface IJobBase {
   title: string;
   description: string;
-  department: string;
+  department: Mongoose.Schema.Types.ObjectId;
   openings: number;
   skills: string[];
   postedAt: Date;
@@ -12,7 +12,7 @@ export interface IJobBase {
 }
 
 export interface IJob extends IJobBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()
@@ -28,7 +28,7 @@ export class Job implements IJob {
     ref: 'department',
     required: true,
   })
-  department: string;
+  department: Mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true, min: 1 })
   openings: number;

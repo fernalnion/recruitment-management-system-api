@@ -65,7 +65,7 @@ export class DepartmentController {
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.CREATED)
-  async createUser(@Body() payload: DepartmentAddRequest) {
+  async createDepartment(@Body() payload: DepartmentAddRequest) {
     await this.departmentService.create(payload);
     return {
       data: true,
@@ -94,7 +94,7 @@ export class DepartmentController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async getUser(@Param('id') id: string): Promise<DepartmentResponse> {
+  async getDepartment(@Param('id') id: string): Promise<DepartmentResponse> {
     const data = await this.departmentService.findOne(id);
     if (!data) {
       throw new Error('Invalid Department');
@@ -113,7 +113,7 @@ export class DepartmentController {
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
   @ApiBody({ type: DepartmentUpdateRequest })
-  async updateUser(
+  async updateDepartment(
     @Param('id') id: string,
     @Body() payload: DepartmentUpdateRequest,
   ): Promise<DepartmentResponse> {
@@ -135,7 +135,7 @@ export class DepartmentController {
   })
   @HttpCode(HttpStatus.OK)
   @ApiParam({ name: 'id', type: String, required: true })
-  async deleteUser(@Param('id') id: string) {
+  async deleteDepartment(@Param('id') id: string) {
     await this.departmentService.remove(id);
     return {
       data: true,

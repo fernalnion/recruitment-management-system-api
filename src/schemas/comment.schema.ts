@@ -4,12 +4,12 @@ import Mongoose from 'mongoose';
 export interface ICommentBase {
   title: string;
   description: string;
-  application: string;
-  applicationevent: string;
+  application: Mongoose.Schema.Types.ObjectId;
+  applicationevent: Mongoose.Schema.Types.ObjectId;
 }
 
 export interface IComment extends ICommentBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()
@@ -25,14 +25,14 @@ export class Comment implements IComment {
     ref: 'Application',
     required: true,
   })
-  application: string;
+  application: Mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: Mongoose.Schema.Types.ObjectId,
     ref: 'ApplicationEvent',
     required: true,
   })
-  applicationevent: string;
+  applicationevent: Mongoose.Schema.Types.ObjectId;
 }
 
 export type CommentDocument = Mongoose.HydratedDocument<Comment>;

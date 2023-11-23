@@ -7,7 +7,7 @@ export interface IDepartmentBase {
 }
 
 export interface IDepartment extends IDepartmentBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()

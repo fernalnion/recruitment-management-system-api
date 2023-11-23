@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ApplicantController } from './applicant.controller';
+import { ResumeController } from './resume.controller';
 import { BusinessModule } from 'src/business/business.module';
 
 @Module({
   imports: [BusinessModule],
-  controllers: [ApplicantController],
+  controllers: [ResumeController],
 })
-export class ApplicantModule {}
+export class ResumeModule {}

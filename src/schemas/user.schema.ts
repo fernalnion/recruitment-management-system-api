@@ -14,7 +14,7 @@ export interface IUserBase {
 }
 
 export interface IUser extends IUserBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
   isVerified: boolean;
   isActive: boolean;
 }

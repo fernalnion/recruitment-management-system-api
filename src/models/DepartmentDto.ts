@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IDepartment, IDepartmentBase } from 'src/schemas/department.schema';
 import { RoleBaseResponse } from './RoleDto';
+import Mongoose from 'mongoose';
 
 export class DepartmentAddRequest implements IDepartmentBase {
   @ApiProperty({ type: Boolean })
@@ -18,8 +19,8 @@ export class DepartmentBaseResponse
   extends DepartmentAddRequest
   implements IDepartment
 {
-  @ApiPropertyOptional({ type: String })
-  _id?: string;
+  @ApiPropertyOptional({ type: () => Mongoose.Schema.Types.ObjectId })
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 export class DepartmentResponse {

@@ -3,12 +3,12 @@ import Mongoose from 'mongoose';
 
 export interface IApplicationEventBase {
   isCanceled: boolean;
-  timestamp: Date;
-  application: string;
+  appliedAt: Date;
+  application: Mongoose.Schema.Types.ObjectId;
 }
 
 export interface IApplicationEvent extends IApplicationEventBase {
-  _id?: string | Mongoose.Schema.Types.ObjectId | any;
+  _id?: Mongoose.Schema.Types.ObjectId;
 }
 
 @Schema()
@@ -17,14 +17,14 @@ export class ApplicationEvent implements IApplicationEvent {
   isCanceled: boolean;
 
   @Prop({ type: Date, required: true })
-  timestamp: Date;
+  appliedAt: Date;
 
   @Prop({
-    type: Mongoose.Schema.Types.ObjectId,
+    type: () => Mongoose.Schema.Types.ObjectId,
     ref: 'Application',
     required: true,
   })
-  application: string;
+  application: Mongoose.Schema.Types.ObjectId;
 }
 
 export type ApplicationEventDocument =

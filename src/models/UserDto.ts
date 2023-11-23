@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IUser, IUserBase } from 'src/schemas/user.schema';
+import Mongoose from 'mongoose';
 
 export class UserAddRequest implements IUserBase {
   @ApiProperty({ type: String })
@@ -24,7 +25,7 @@ export class UserAddRequest implements IUserBase {
   department: string = '';
 
   @ApiProperty({ type: String })
-  role: string = '';
+  role: string = new Mongoose.Types.ObjectId().toString();
 
   @ApiPropertyOptional({ type: String })
   dob?: Date;
@@ -39,8 +40,8 @@ export class UserUpdateRequest extends UserAddRequest implements IUserBase {
 }
 
 export class UserBaseResponse extends UserAddRequest implements IUser {
-  @ApiPropertyOptional({ type: String })
-  _id?: string;
+  @ApiPropertyOptional({ type: () => Mongoose.Schema.Types.ObjectId })
+  _id?: Mongoose.Schema.Types.ObjectId;
 
   @ApiProperty({ type: Boolean })
   isVerified: boolean = false;

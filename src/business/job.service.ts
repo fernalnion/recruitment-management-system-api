@@ -1,34 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Job } from 'src/entities/job.entity';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IJob, IJobBase, Job } from 'src/schemas/job.schema';
 
 @Injectable()
 export class JobService {
   constructor(
-    @InjectRepository(Job)
-    private readonly jobRepository: Repository<Job>,
+    @InjectModel(Job.name)
+    private readonly jobModel: Model<Job>,
   ) {}
 
-  async findAll(): Promise<Job[]> {
-    return this.jobRepository.find();
+  async findAll(): Promise<IJob[]> {
+    return this.jobModel.find();
   }
 
-  async findOne(id: number): Promise<Job | null> {
-    return this.jobRepository.findOne({ where: { id } });
+  async findOne(_id: string): Promise<IJob | null> {
+    return this.jobModel.findOne({ _id });
   }
 
-  async create(jobData: Partial<Job>): Promise<Job> {
-    const department = this.jobRepository.create(jobData);
-    return this.jobRepository.save(department);
+  async create(data: IJobBase): Promise<IJob> {
+    const job = new this.jobModel(data);
+    return job.save();
   }
 
-  async update(id: number, jobData: Partial<Job>): Promise<Job | null> {
-    await this.jobRepository.update(id, jobData);
-    return this.jobRepository.findOne({ where: { id } });
+  async update(_id: string, data: Partial<IJob>): Promise<IJob | null> {
+    return this.jobModel.findByIdAndUpdate({ _id }, data);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.jobRepository.delete(id);
+  async remove(_id: string): Promise<void> {
+    await this.jobModel.deleteOne({ _id });
   }
 }

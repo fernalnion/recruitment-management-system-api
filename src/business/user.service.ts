@@ -1,53 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IUser, User } from 'src/entities/user.entity';
-import { UserAddRequest, UserUpdateRequest } from 'src/models/User';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IUser, IUserBase, User } from 'src/schemas/user.schema';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
   ) {}
 
   findAll = (): Promise<IUser[]> => {
-    return this.userRepository.find({ relations: ['role', 'department'] });
+    return this.userModel.find({});
   };
 
-  findOne = (id: number): Promise<IUser | null> => {
-    return this.userRepository.findOne({
-      where: { id },
-      relations: ['role', 'department'],
-    });
+  findOne = (_id: string): Promise<IUser | null> => {
+    return this.userModel.findOne({ _id });
   };
 
   create = (
-    userData: UserAddRequest & { isActive?: boolean; isVerified?: boolean },
-  ): Promise<User> => {
-    const user = this.userRepository.create(userData);
-    return this.userRepository.save(user);
+    data: IUserBase & { isActive?: boolean; isVerified?: boolean },
+  ): Promise<IUser> => {
+    const user = new this.userModel(data);
+    return user.save();
   };
 
   update = async (
-    id: number,
-    userData: Partial<UserUpdateRequest> & {
+    _id: string,
+    data: Partial<IUserBase> & {
       isActive?: boolean;
       isVerified?: boolean;
     },
   ): Promise<IUser | null> => {
-    await this.userRepository.update(id, userData);
-    return this.findOne(id);
+    return this.userModel.findByIdAndUpdate({ _id }, data);
   };
 
-  remove = async (id: number): Promise<void> => {
-    await this.userRepository.delete(id);
+  remove = async (_id: string): Promise<void> => {
+    await this.userModel.deleteOne({ _id });
   };
 
   findByUsername = (username: string): Promise<IUser | null> => {
-    return this.userRepository.findOne({
-      where: { username },
-      relations: ['role', 'department'],
-    });
+    return this.userModel.findOne({ username });
   };
 }

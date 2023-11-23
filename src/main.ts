@@ -9,8 +9,10 @@ import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
 import { transports, format } from 'winston';
 import { Logger } from '@nestjs/common';
+import { set } from 'mongoose';
 
 async function bootstrap() {
+  set('debug', !process.env.ENV_PROD);
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
       transports: [

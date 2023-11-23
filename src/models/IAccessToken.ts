@@ -1,9 +1,6 @@
-import { Request } from 'express';
-import { User } from 'src/entities/user.entity';
-
 export interface JwtPayload {
   username: string;
-  sub: number;
+  sub: string;
 }
 
 export interface IAccessToken {
@@ -11,10 +8,6 @@ export interface IAccessToken {
 }
 
 export interface IUserIdentityPayload {
+  userId: string;
   username: string;
-  userId: number;
-}
-
-export interface LoginRequest extends Request {
-  user: User;
 }

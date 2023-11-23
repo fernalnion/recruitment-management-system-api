@@ -1,42 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { IRole, Role } from 'src/entities/role.entity';
-import { RoleAddRequest, RoleUpdateRequest } from 'src/models/Role';
-import { Repository } from 'typeorm';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { IRole, IRoleBase, Role } from 'src/schemas/role.schema';
 
 @Injectable()
 export class RoleService {
   constructor(
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
+    @InjectModel(Role.name)
+    private readonly roleModel: Model<Role>,
   ) {}
 
   findAll = (): Promise<IRole[]> => {
-    return this.roleRepository.find();
+    return this.roleModel.find();
   };
 
   findByName = (name: string): Promise<IRole | null> => {
-    return this.roleRepository.findOne({ where: { name } });
+    return this.roleModel.findOne({ name });
   };
 
-  findOne = (id: number): Promise<IRole | null> => {
-    return this.roleRepository.findOne({ where: { id } });
+  findOne = (_id: string): Promise<IRole | null> => {
+    return this.roleModel.findOne({ _id });
   };
 
-  create = (roleData: RoleAddRequest): Promise<IRole> => {
-    const department = this.roleRepository.create(roleData);
-    return this.roleRepository.save(department);
+  create = (data: IRoleBase): Promise<IRole> => {
+    const role = new this.roleModel(data);
+    return role.save();
   };
 
   update = async (
-    id: number,
-    roleData: Partial<RoleUpdateRequest>,
+    _id: string,
+    data: Partial<IRoleBase>,
   ): Promise<IRole | null> => {
-    await this.roleRepository.update(id, roleData);
-    return this.roleRepository.findOne({ where: { id } });
+    return await this.roleModel.findByIdAndUpdate({ _id }, data);
   };
 
-  remove = async (id: number): Promise<void> => {
-    await this.roleRepository.delete(id);
+  remove = async (_id: string): Promise<void> => {
+    await this.roleModel.deleteOne({ _id });
   };
 }

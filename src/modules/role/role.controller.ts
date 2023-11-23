@@ -18,7 +18,7 @@ import {
 import { RoleService } from 'src/business/role.service';
 import { BooleanResponse } from 'src/models/BooleanResponse';
 import { ErrorResponse } from 'src/models/ErrorResponse';
-import { RoleAddRequest } from 'src/models/Role';
+import { RoleAddRequest } from 'src/models/RoleDto';
 @ApiTags('Role')
 @Controller('role')
 @ApiResponse({
@@ -36,7 +36,7 @@ import { RoleAddRequest } from 'src/models/Role';
   description: 'Server error',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
-@ApiExtraModels(ErrorResponse, BooleanResponse)
+@ApiExtraModels(ErrorResponse, BooleanResponse, RoleAddRequest)
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 export class RoleController {

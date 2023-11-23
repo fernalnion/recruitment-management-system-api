@@ -1,45 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Department, IDepartment } from 'src/entities/department.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import {
-  DepartmentAddRequest,
-  DepartmentUpdateRequest,
-} from 'src/models/Department';
-import { Repository } from 'typeorm';
+  Department,
+  IDepartment,
+  IDepartmentBase,
+} from 'src/schemas/department.schema';
 
 @Injectable()
 export class DepartmentService {
   constructor(
-    @InjectRepository(Department)
-    private readonly departmentRepository: Repository<Department>,
+    @InjectModel(Department.name)
+    private readonly departmentModel: Model<Department>,
   ) {}
 
   findAll = (): Promise<IDepartment[]> => {
-    return this.departmentRepository.find();
+    return this.departmentModel.find();
   };
 
   findByName = (name: string): Promise<IDepartment | null> => {
-    return this.departmentRepository.findOne({ where: { name } });
+    return this.departmentModel.findOne({ name });
   };
 
-  findOne = (id: number): Promise<IDepartment | null> => {
-    return this.departmentRepository.findOne({ where: { id } });
+  findOne = (_id: string): Promise<IDepartment | null> => {
+    return this.departmentModel.findOne({ _id });
   };
 
-  create = (departmentData: DepartmentAddRequest): Promise<IDepartment> => {
-    const department = this.departmentRepository.create(departmentData);
-    return this.departmentRepository.save(department);
+  create = (data: IDepartmentBase): Promise<IDepartment> => {
+    const department = new this.departmentModel(data);
+    return department.save();
   };
 
   update = async (
-    id: number,
-    departmentData: Partial<DepartmentUpdateRequest>,
+    _id: string,
+    data: Partial<IDepartmentBase>,
   ): Promise<IDepartment | null> => {
-    await this.departmentRepository.update(id, departmentData);
-    return this.departmentRepository.findOne({ where: { id } });
+    return this.departmentModel.findOneAndUpdate({ _id }, data);
   };
 
-  remove = async (id: number): Promise<void> => {
-    await this.departmentRepository.delete(id);
+  remove = async (_id: string): Promise<void> => {
+    await this.departmentModel.deleteOne({ _id });
   };
 }

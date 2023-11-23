@@ -28,7 +28,7 @@ import {
   UserResponse,
   UserUpdateRequest,
   UsersResponse,
-} from 'src/models/User';
+} from 'src/models/UserDto';
 import { AuthGuard } from '../auth/auth.guard';
 
 @ApiTags('User')
@@ -52,8 +52,8 @@ import { AuthGuard } from '../auth/auth.guard';
   ErrorResponse,
   BooleanResponse,
   UserAddRequest,
-  UserResponse,
   UserUpdateRequest,
+  UserResponse,
   UsersResponse,
 )
 @ApiBearerAuth()
@@ -96,8 +96,8 @@ export class UsersController {
     schema: { $ref: getSchemaPath(UserResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: Number, required: true })
-  async getUser(@Param('id', new ParseIntPipe()) id: number) {
+  @ApiParam({ name: 'id', type: String, required: true })
+  async getUser(@Param('id', new ParseIntPipe()) id: string) {
     const user = await this.userService.findOne(id);
     if (!user) {
       throw new Error('Invalid User');
@@ -117,10 +117,10 @@ export class UsersController {
     schema: { $ref: getSchemaPath(UserResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: Number, required: true })
+  @ApiParam({ name: 'id', type: String, required: true })
   @ApiBody({ type: UserUpdateRequest })
   async updateUser(
-    @Param('id', new ParseIntPipe()) id: number,
+    @Param('id') id: string,
     @Body() payload: UserUpdateRequest,
   ): Promise<UserResponse> {
     const data = await this.userService.update(id, payload);
@@ -139,10 +139,10 @@ export class UsersController {
     schema: { $ref: getSchemaPath(UserResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: Number, required: true })
+  @ApiParam({ name: 'id', type: String, required: true })
   @ApiParam({ name: 'status', type: Boolean, required: true })
   async updateUserStatus(
-    @Param('id', new ParseIntPipe()) id: number,
+    @Param('id', new ParseIntPipe()) id: string,
     @Param('status', new ParseIntPipe()) status: boolean,
   ): Promise<UserResponse> {
     const data = await this.userService.update(id, { isActive: status });
@@ -161,8 +161,8 @@ export class UsersController {
     schema: { $ref: getSchemaPath(BooleanResponse) },
   })
   @HttpCode(HttpStatus.OK)
-  @ApiParam({ name: 'id', type: Number, required: true })
-  async deleteUser(@Param('id', new ParseIntPipe()) id: number) {
+  @ApiParam({ name: 'id', type: String, required: true })
+  async deleteUser(@Param('id', new ParseIntPipe()) id: string) {
     await this.userService.remove(id);
     return {
       data: true,

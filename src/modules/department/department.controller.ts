@@ -46,7 +46,14 @@ import { AuthGuard } from '../auth/auth.guard';
   description: 'Server error',
   schema: { $ref: getSchemaPath(ErrorResponse) },
 })
-@ApiExtraModels(ErrorResponse)
+@ApiExtraModels(
+  ErrorResponse,
+  BooleanResponse,
+  DepartmentAddRequest,
+  DepartmentResponse,
+  DepartmentUpdateRequest,
+  DepartmentsResponse,
+)
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 export class DepartmentController {
